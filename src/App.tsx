@@ -1,10 +1,11 @@
 import './App.css'
+import MyDataTable from './components/DataTable/DataTable'
 
 function App() {
 
   return (
     <>
-      <div>React Prime Table</div>
+      <MyDataTable />
     </>
   )
 }
