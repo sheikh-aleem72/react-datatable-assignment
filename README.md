@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+# 🎨 Artworks Data Table — React + PrimeReact
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully functional and responsive **data table** built with **React + PrimeReact**, featuring:
 
-Currently, two official plugins are available:
+- Server-side pagination
+- Persistent row selection across pages
+- Select-first-N-rows logic with auto-page handling
+- Live checkbox updates
+- Smooth visual row highlighting
+- Modern, responsive UI
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+✅ **Server-Side Pagination** — Loads artworks page by page from the API using lazy loading.  
+✅ **Persistent Selection** — Keeps selected rows remembered even when navigating between pages.  
+✅ **Select First N Rows** — Enter a number (like 34) and it automatically selects the first N rows across multiple pages.  
+✅ **Auto-Selection Map** — Smart internal logic that tracks which pages should be auto-selected next.  
+✅ **Instant Feedback** — Checkboxes and row highlights update instantly without delay.  
+✅ **Responsive UI** — The table automatically adjusts for smaller screens.  
+✅ **PrimeReact Integration** — Uses `DataTable` and `Column` for reliable performance and styling.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧩 Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Technology       | Purpose                     |
+| ---------------- | --------------------------- |
+| **React (Vite)** | Frontend framework          |
+| **PrimeReact**   | Data table UI components    |
+| **TypeScript**   | Type safety                 |
+| **CSS3**         | Custom styling              |
+| **Fetch API**    | API calls for artworks data |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📦 Project Setup
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Clone the repository and install dependencies:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/sheikh-aleem72/react-datatable-assignment
+cd artworks-table
+npm install
 ```
