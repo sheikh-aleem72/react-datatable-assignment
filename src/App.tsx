@@ -1,5 +1,5 @@
 import './App.css'
-import MyDataTable from './components/DataTable/DataTable'
+import MyDataTable from './components/MyDataTable/MyDataTable'
 
 function App() {
 

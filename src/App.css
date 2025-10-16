@@ -76,6 +76,29 @@
   color: #fff;
 }
 
+.row-count-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 30px 20px;
+  background-color: #f2f4f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.row-count-container input{
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.row-count-container button{
+  padding: 5px 10px;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+}
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .custom-table {

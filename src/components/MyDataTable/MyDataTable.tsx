@@ -1,9 +1,9 @@
-// src/App.tsx
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DataTable, type DataTablePageEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import '../../App.css';
-import { Button } from 'primereact/button';
+import { FaChevronDown } from 'react-icons/fa';
+import { OverlayPanel } from 'primereact/overlaypanel';
 
 interface Artwork {
   id: number;
@@ -21,8 +21,14 @@ function MyDataTable() {
   const [page, setPage] = useState<number>(1);
   const [totalRecords, setTotalRecords] = useState<number>(0);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [rowCount, setRowCount] = useState<number>(0);
+  const [autoSelectMap, setAutoSelectMap] = useState<Record<number, number>>({});
+  const rowsPerPage = 12;
 
-  // Fetch data
+  const overlayRef = useRef<OverlayPanel>(null);
+
+  //  Fetch Data (Pagination)
+  // ---------------------------
   useEffect(() => {
     const fetchArtworks = async () => {
       try {
@@ -40,13 +46,16 @@ function MyDataTable() {
     fetchArtworks();
   }, [page]);
 
-  // Page change handler
+  // ---------------------------
+  //  Handle Page Change
+  // ---------------------------
   const onPageChange = (event: DataTablePageEvent) => {
     const nextPage = event.page ? event.page + 1 : 1;
     setPage(nextPage);
   };
 
-  // Toggle single row selection
+  // Row Selection Logic
+  // ---------------------------
   const toggleRowSelection = (id: number, checked: boolean) => {
     setSelectedIds((prev) => {
       const copy = new Set(prev);
@@ -56,16 +65,79 @@ function MyDataTable() {
     });
   };
 
-  // Check if a row is selected
   const isSelected = (id: number) => selectedIds.has(id);
 
-  // Header checkbox (select all on page)
-  const headerCheckboxTemplate = () => {
+  // Select-All + Overlay Logic
+  // ---------------------------
+  const handleSelectFirstN = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (rowCount <= 0) return;
+
+    const newMap: Record<number, number> = {};
+    let remaining = rowCount;
+
+    // Calculate how many rows per page should be selected
+    for (let p = 1; remaining > 0; p++) {
+      const count = Math.min(rowsPerPage, remaining);
+      newMap[p] = count;
+      remaining -= count;
+    }
+
+    setAutoSelectMap(newMap);
+
+    // Reset rowCount value in input field
+    setRowCount(0);
+    overlayRef.current?.hide();
+
+    //  If current page is part of the selection map, apply immediately
+    if (newMap[page]) {
+      const rowsToSelect = artworks.slice(0, newMap[page]);
+      setSelectedIds((prev) => {
+        const copy = new Set(prev);
+        rowsToSelect.forEach((r) => copy.add(r.id));
+        return copy;
+      });
+
+    // remove current page from the autoSelectMap (since job is done)
+    setAutoSelectMap((prev) => {
+      const copy = { ...prev };
+      delete copy[page];
+      return copy;
+    });      
+    }
+  };
+
+  // Apply Auto-Selection on Page Load
+  // ---------------------------
+  useEffect(() => {
+    const count = autoSelectMap[page];
+    if (!count) return;
+
+    const rowsToSelect = artworks.slice(0, count);
+
+    setSelectedIds((prev) => {
+      const copy = new Set(prev);
+      rowsToSelect.forEach((r) => copy.add(r.id));
+      return copy;
+    });
+
+    // remove current page from the autoSelectMap (since job is done)
+    setAutoSelectMap((prev) => {
+      const copy = { ...prev };
+      delete copy[page];
+      return copy;
+    });
+
+    }, [artworks,]);
+
+    // Header Checkbox Template
+    // ---------------------------
+    const headerCheckboxTemplate = () => {
     const allOnPageSelected =
       artworks.length > 0 && artworks.every((a) => isSelected(a.id));
 
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', display: 'flex', alignItems: 'center', gap: '4px' }}>
         <input
           type="checkbox"
           aria-label="select-all"
@@ -82,11 +154,32 @@ function MyDataTable() {
             });
           }}
         />
+        <button
+          type="button"
+          className="btn"
+          onClick={(e) => overlayRef.current?.toggle(e)}
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
+        >
+          <FaChevronDown />
+        </button>
+
+        <OverlayPanel ref={overlayRef}>
+          <form className="row-count-container" onSubmit={handleSelectFirstN}>
+            <input
+              type="number"
+              placeholder="Enter rows to select..."
+              value={rowCount || ''}
+              onChange={(e) => setRowCount(Number(e.target.value))}
+            />
+            <button type="submit">Submit</button>
+          </form>
+        </OverlayPanel>
       </div>
     );
   };
 
-  // Row checkbox
+  // ---------------------------
+  // Row Checkbox Template
   const rowCheckboxTemplate = (rowData: Artwork) => {
     const checked = isSelected(rowData.id);
     return (
@@ -100,28 +193,21 @@ function MyDataTable() {
     );
   };
 
-  // Debug info
-  const selectedList = Array.from(selectedIds).join(', ');
-
-  useEffect(() => {
-    console.log('selectedIds', selectedIds);
-  }, [selectedIds]);
-
   return (
     <div className="table-container">
       <h2>🎨 Artworks Table</h2>
 
       <div className="table-wrapper">
         <DataTable
-          key={Array.from(selectedIds).join(',')} // ✅ Forces re-render when selection changes
+          key={Array.from(selectedIds).join(',')}
           value={artworks}
           loading={loading}
           paginator
-          rows={12}
+          rows={rowsPerPage}
           totalRecords={totalRecords}
           lazy
           onPage={onPageChange}
-          first={(page - 1) * 12}
+          first={(page - 1) * rowsPerPage}
           responsiveLayout="scroll"
           className="custom-table"
           dataKey="id"
@@ -139,10 +225,6 @@ function MyDataTable() {
           <Column field="date_end" header="Date End" />
         </DataTable>
       </div>
-
-      <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-        Selected IDs: {selectedList || 'None'}
-      </p>
     </div>
   );
 }
