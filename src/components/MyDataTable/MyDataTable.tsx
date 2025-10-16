@@ -137,7 +137,7 @@ function MyDataTable() {
       artworks.length > 0 && artworks.every((a) => isSelected(a.id));
 
     return (
-      <div style={{ textAlign: 'center', display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <div className='header-checkbox' >
         <input
           type="checkbox"
           aria-label="select-all"
@@ -183,7 +183,7 @@ function MyDataTable() {
   const rowCheckboxTemplate = (rowData: Artwork) => {
     const checked = isSelected(rowData.id);
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div className='row-checkbox' style={{ textAlign: 'center' }}>
         <input
           type="checkbox"
           checked={checked}
@@ -195,7 +195,7 @@ function MyDataTable() {
 
   return (
     <div className="table-container">
-      <h2>🎨 Artworks Table</h2>
+      <h2>Artworks Table</h2>
 
       <div className="table-wrapper">
         <DataTable
