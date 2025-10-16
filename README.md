@@ -21,7 +21,7 @@ A fully functional and responsive **data table** built with **React + PrimeReact
 ✅ **Responsive UI** — The table automatically adjusts for smaller screens.  
 ✅ **PrimeReact Integration** — Uses `DataTable` and `Column` for reliable performance and styling.
 
----
+## Netlify Link: [https://artwork-datatable-react.netlify.app/]("https://artwork-datatable-react.netlify.app/")
 
 ## 🧩 Tech Stack
 
